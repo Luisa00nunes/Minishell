@@ -6,7 +6,7 @@
 /*   By: ldos_sa2 <ldos-sa2@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 08:19:09 by ldos_sa2          #+#    #+#             */
-/*   Updated: 2025/09/18 11:56:23 by ldos_sa2         ###   ########.fr       */
+/*   Updated: 2025/10/02 17:03:10 by ldos_sa2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <unistd.h>
 # include <stdarg.h>
 # include <stdio.h>
+# include <string.h>
 # include "../printf/ft_printf.h"
 # include "../libft/libft.h"
 #include <readline/readline.h>
@@ -38,5 +39,8 @@ typedef struct s_node
 	e_token			type;
 	struct s_node	*next;
 }				t_node;
+
+char	**ms_split(char const *s);
+int	count_words(char const *s);
 
 #endif

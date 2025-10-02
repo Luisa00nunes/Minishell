@@ -6,32 +6,12 @@
 /*   By: ldos_sa2 <ldos-sa2@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 08:18:07 by ldos_sa2          #+#    #+#             */
-/*   Updated: 2025/09/23 01:07:33 by ldos_sa2         ###   ########.fr       */
+/*   Updated: 2025/10/02 17:32:30 by ldos_sa2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	count_words(char const *s, char c)
-{
-	int	i;
-	int	words;
-
-	i = 0;
-	words = 0;
-	while (s[i])
-	{
-		if (s[i] != c)
-		{
-			words++;
-			while (s[i] != c && s[i])
-				i++;
-		}
-		else
-			i++;
-	}
-	return (words);
-}
 t_node	*newnode(char *v, e_token type)
 {
 	t_node	*new_node;
@@ -67,7 +47,7 @@ void	nodeadd_back(t_node **lst, t_node *new)
 	else //se head tiver apontando para o null
 		*lst = new;
 }
-void	split_tokens(char *process)
+t_node	*split_tokens(char *process)
 {
 	t_node	*ls = NULL;
 	t_node	*node;
@@ -82,60 +62,34 @@ void	split_tokens(char *process)
 		node = newnode(process, WORD);
 		nodeadd_back(&ls, node);
 	}
-	while(ls)
+	/*while(ls)
 	{
 		printf("Type: %i   Value: %s\n", ls->type, ls->value);
+		printf("aaaa\n");
 		ls = ls ->next;
-	}
-
-}
-
-static int	count_process(char const *s)
-{
-	int	i;
-	int	process;
-	int pipes;
-
-	i = 0;
-	process = 0;
-	pipes = 0;
-	while (s[i])
-	{
-		if (s[i] != '|')
-		{
-			process++;
-			while (s[i] != '|' && s[i])
-				i++;
-		}
-		else
-			pipes++;
-			i++;
-	}
-	return (process + pipes);
+	}*/
+	return(ls);
 }
 
 void	split_process(char *prompt)
 {
-	int i = 0;
-	int j = 0;
-	char	**process_list;
-	char	**process;
+	char	**token_list;
 
-	process_list = ft_split(prompt, '|');
-	while(i < count_process(prompt))
+	int	i;
+	int	tokens;
+
+	i = 0;
+	//tratar error de começo - prompt vazio etc
+	tokens = count_words(prompt);
+	token_list = ms_split(prompt);
+	while(i < tokens)
 	{
-		process = ft_split(process_list[i], ' ');
-		while(process[j])
-		{
-			split_tokens(process[j]);
-			j++;
-		}
-		free(process);
-		split_tokens("|");
-		j = 0;
+		split_tokens(token_list[i]);
+		free(token_list[i]);
 		i++;
 	}
-	free(process_list);
+	free(token_list);
+	token_list = NULL;
 }
 int	main()
 {

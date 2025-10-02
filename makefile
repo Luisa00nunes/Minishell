@@ -6,7 +6,8 @@ FLAGS = -Wall -Werror -Wextra
 
 RM = rm -f
 
-SRC= ms_test.c
+SRC= ms_split.c \
+	ms_test.c
 
 OBJS = $(SRC:.c=.o)
 
@@ -17,7 +18,7 @@ LIBFT = ~/42/libft/libft.a
 all: $(NAME)
 
 $(NAME): $(OBJS) $(PRINTF) $(LIBFT)
-		$(CC) $(FLAGS) $(OBJS) -lreadline $(PRINTF) $(LIBFT)
+		$(CC) $(FLAGS) $(OBJS) -lreadline $(PRINTF) $(LIBFT) -o minishell
 
 $(PRINTF):
 		make -C ~/42/printf
