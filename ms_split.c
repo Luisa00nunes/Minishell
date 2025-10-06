@@ -6,7 +6,7 @@
 /*   By: ldos_sa2 <ldos-sa2@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 14:36:27 by ldos_sa2          #+#    #+#             */
-/*   Updated: 2025/10/02 17:20:26 by ldos_sa2         ###   ########.fr       */
+/*   Updated: 2025/10/04 15:11:47 by ldos_sa2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	count_words(char const *s)
 	words = 0;
 	while (s[i])
 	{
-		while(s[i] == ' ')
+		while(s[i] == ' ' || s[i] == '\t')
 			i++;
 		if (s[i] == '"' || s[i] == '\'' || s[i] == '|')
 		{
@@ -114,7 +114,7 @@ char	**ms_split(char const *s)
 	tokens = (char **)malloc((num_tokens + 1) * sizeof(char *));
 	while(s[i])
 	{
-		while(s[i] == ' ')
+		while(s[i] == ' ' || s[i] == '\t')
 			i++;
 		if (s[i] == '|')
 		{

@@ -6,7 +6,7 @@
 /*   By: ldos_sa2 <ldos-sa2@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 08:19:09 by ldos_sa2          #+#    #+#             */
-/*   Updated: 2025/10/02 17:03:10 by ldos_sa2         ###   ########.fr       */
+/*   Updated: 2025/10/04 15:52:14 by ldos_sa2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,8 @@ typedef struct s_node
 
 char	**ms_split(char const *s);
 int	count_words(char const *s);
+t_node	*newnode(char *v, e_token type);
+t_node	*node_last(t_node *node);
+void	nodeadd_back(t_node **lst, t_node *new);
 
 #endif

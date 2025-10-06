@@ -7,7 +7,8 @@ FLAGS = -Wall -Werror -Wextra
 RM = rm -f
 
 SRC= ms_split.c \
-	ms_test.c
+	ms_test.c \
+	node_utils.c \
 
 OBJS = $(SRC:.c=.o)
 
@@ -17,7 +18,7 @@ LIBFT = ~/42/libft/libft.a
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(PRINTF) $(LIBFT)
+$(NAME): $(OBJS) $(PRINTF) $(LIBFT) $(LIBFt_BONUS)
 		$(CC) $(FLAGS) $(OBJS) -lreadline $(PRINTF) $(LIBFT) -o minishell
 
 $(PRINTF):
@@ -25,6 +26,9 @@ $(PRINTF):
 
 $(LIBFT):
 		make -C ~/42/libft
+
+$(LIBFt_BONUS):
+		make bonus -C ~/42/libft
 
 clean:
 	$(RM) $(OBJS)
