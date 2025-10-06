@@ -6,11 +6,49 @@
 /*   By: ldos_sa2 <ldos-sa2@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 08:18:07 by ldos_sa2          #+#    #+#             */
-/*   Updated: 2025/10/04 15:57:54 by ldos_sa2         ###   ########.fr       */
+/*   Updated: 2025/10/06 20:26:08 by ldos_sa2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	is_redd(char *token)
+{
+	if(!ft_strncmp(token, ">", 1) || !ft_strncmp(token, "<", 1))
+		return (1);
+	else if(!ft_strncmp(token, ">>", 2) || !ft_strncmp(token, "<<", 2))
+		return (1);
+	else
+		return (0);
+}
+
+void	not_words(char *token, t_node *ls)
+{
+	t_node	*node;
+
+	if(!ft_strncmp(token, "<<", 2))
+	{
+		node = newnode(token, APP_OUT);
+		nodeadd_back(&ls, node);
+	}
+	else if(!ft_strncmp(token, ">>", 2))
+	{
+		node = newnode(token, HEREDOC);
+		nodeadd_back(&ls, node);
+	}
+		else if(!ft_strncmp(token, "<", 1))
+	{
+		node = newnode(token, RED_IN);
+		nodeadd_back(&ls, node);
+	}
+	else if(!ft_strncmp(token, ">", 1))
+	{
+		node = newnode(token, RED_OUT);
+		nodeadd_back(&ls, node);
+	}
+	else
+		return ;
+}
 
 t_node	*split_tokens(char **token_list)
 {
@@ -27,17 +65,16 @@ t_node	*split_tokens(char **token_list)
 			nodeadd_back(&ls, node);
 			i++;
 		}
+		else if (is_redd(token_list[i]))
+		{
+			not_words(token_list[i], ls);
+			i++;
+		}
 		node = newnode(token_list[i], WORD);
 		nodeadd_back(&ls, node);
 		free(token_list[i]);
 		i++;
 	}
-	/*while(ls)
-	{
-		printf("Type: %i   Value: %s\n", ls->type, ls->value);
-		printf("aaaa\n");
-		ls = ls ->next;
-	}*/
 	return(ls);
 }
 void	free_nodelist(); //fazer!

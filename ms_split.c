@@ -6,35 +6,34 @@
 /*   By: ldos_sa2 <ldos-sa2@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 14:36:27 by ldos_sa2          #+#    #+#             */
-/*   Updated: 2025/10/04 15:11:47 by ldos_sa2         ###   ########.fr       */
+/*   Updated: 2025/10/06 20:19:33 by ldos_sa2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-// primeiro separar em pipe
-// com aspas
-// red in red out append e heredoc
-
-
 static void	skip_words(const char *s, int *i)
 {
-	while(s[*i] && s[*i] != ' ' && s[*i] != '|')
+	while(s[*i] && s[*i] != ' ' && s[*i] != '|' && s[*i] != '<' && s[*i] != '>')
 		(*i)++;
 }
 
-static int	handle_pq(const char *s, int *i)
+static void	handle_redd(const char *s, int *i)
+{
+	char	c;
+
+	if (s[*i] == '|')
+		(*i)++;
+	c = s[*i];
+	(*i)++;
+	if (s[*i] == c)
+		(*i)++;
+}
+
+static int	handle_q(const char *s, int *i)
 {
 	char q;
 
-	if (s[*i] == '|')
-	{
-		(*i)++;
-		return (1);
-	}
-	else
-	{
 		q = s[*i];
 		(*i)++;
 		while(s[*i] && s[*i] != q)
@@ -42,7 +41,6 @@ static int	handle_pq(const char *s, int *i)
 		if(!s[*i])
 			return (-1);
 		(*i)++;
-	}
 	return(1);
 }
 
@@ -57,17 +55,19 @@ int	count_words(char const *s)
 	{
 		while(s[i] == ' ' || s[i] == '\t')
 			i++;
-		if (s[i] == '"' || s[i] == '\'' || s[i] == '|')
+		if (s[i] == '"' || s[i] == '\'')
 		{
-			if(handle_pq(s, &i) == -1)
+			if (handle_q(s, &i) == -1)
 				return (-1);
 			words++;
 		}
-		else
+		else if (s[i] == '>' || s[i] == '<' | s[i] == '|')
 		{
-			skip_words(s, &i);
+			handle_redd(s, &i);
 			words++;
 		}
+		skip_words(s, &i);
+		words++;
 	}
 	return (words);
 }
@@ -92,11 +92,33 @@ static char	*copy_tokens(const char *s, int *i)
 	else
 	{
 		start = *i;
-		while (s[*i] && s[*i] != ' ' && s[*i] != '|')
+		while (s[*i] && s[*i] != ' ' && s[*i] != '|' && s[*i] != '<' && s[*i] != '>')
 			(*i)++;
 		token = ft_substr(s, start, *i - start);
 	}
 	return(token);
+}
+char	*copy_notwords(const char	*s, int *i)
+{
+	char	*token;
+	char	q;
+	int		start;
+
+	start = *i;
+	if (s[*i] == '|')
+	{
+		token = ft_substr(s, start, 1);
+		(*i)++;
+	}
+	else if(s[*i] == '>' || s[*i] == '<')
+	{
+		q = s[*i];
+		(*i)++;
+		if(s[*i] == q)
+			(*i)++;
+		token = ft_substr(s, start, *i - start);
+	}
+	return (token);
 }
 
 char	**ms_split(char const *s)
@@ -116,11 +138,10 @@ char	**ms_split(char const *s)
 	{
 		while(s[i] == ' ' || s[i] == '\t')
 			i++;
-		if (s[i] == '|')
-		{
-			tokens[j++] = ft_strdup("|");
-			i++;
-		}
+		if(!s[i])
+			break;
+		if (s[i] == '|' || s[i] == '<' || s[i] == '>')
+			tokens[j++] = copy_notwords(s, &i);
 		else if(s[i])
 			tokens[j++] = copy_tokens(s, &i);
 	}
