@@ -6,7 +6,7 @@
 /*   By: ldos_sa2 <ldos-sa2@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/18 14:36:27 by ldos_sa2          #+#    #+#             */
-/*   Updated: 2025/10/06 20:19:33 by ldos_sa2         ###   ########.fr       */
+/*   Updated: 2025/10/06 21:19:10 by ldos_sa2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,11 @@ int	count_words(char const *s)
 		{
 			if (handle_q(s, &i) == -1)
 				return (-1);
-			words++;
 		}
 		else if (s[i] == '>' || s[i] == '<' | s[i] == '|')
-		{
 			handle_redd(s, &i);
-			words++;
-		}
-		skip_words(s, &i);
+		else
+			skip_words(s, &i);
 		words++;
 	}
 	return (words);

@@ -6,7 +6,7 @@
 /*   By: ldos_sa2 <ldos-sa2@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 08:18:07 by ldos_sa2          #+#    #+#             */
-/*   Updated: 2025/10/06 20:26:08 by ldos_sa2         ###   ########.fr       */
+/*   Updated: 2025/10/06 20:54:29 by ldos_sa2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,12 @@ void	not_words(char *token, t_node *ls)
 
 	if(!ft_strncmp(token, "<<", 2))
 	{
-		node = newnode(token, APP_OUT);
+		node = newnode(token, HEREDOC);
 		nodeadd_back(&ls, node);
 	}
 	else if(!ft_strncmp(token, ">>", 2))
 	{
-		node = newnode(token, HEREDOC);
+		node = newnode(token, APP_OUT);
 		nodeadd_back(&ls, node);
 	}
 		else if(!ft_strncmp(token, "<", 1))
@@ -63,21 +63,31 @@ t_node	*split_tokens(char **token_list)
 		{
 			node = newnode(token_list[i], PIPE);
 			nodeadd_back(&ls, node);
-			i++;
 		}
 		else if (is_redd(token_list[i]))
-		{
 			not_words(token_list[i], ls);
-			i++;
+		else
+		{
+			node = newnode(token_list[i], WORD);
+			nodeadd_back(&ls, node);
 		}
-		node = newnode(token_list[i], WORD);
-		nodeadd_back(&ls, node);
 		free(token_list[i]);
 		i++;
 	}
 	return(ls);
 }
-void	free_nodelist(); //fazer!
+void	free_nodelist(t_node *list)
+{
+	t_node	*tmp;
+
+	while(list)
+	{
+		tmp = list->next;
+		free(list->value);
+		free(list);
+		list = tmp;
+	}
+}
 
 void	split_process(char *prompt)
 {
@@ -94,11 +104,14 @@ void	split_process(char *prompt)
 	tokens = split_tokens(token_list);
 	free(token_list);
 	token_list = NULL;
-	while(tokens)
+
+	t_node *tmp = tokens;
+	while(tmp)
 	{
-		printf("Type: %i   Value: %s\n", tokens->type, tokens->value);
-		tokens = tokens ->next;
+		printf("Type: %i   Value: %s\n", tmp->type, tmp->value);
+		tmp = tmp ->next;
 	}
+	free_nodelist(tokens);
 }
 
 
