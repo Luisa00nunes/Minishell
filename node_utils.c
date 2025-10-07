@@ -6,7 +6,7 @@
 /*   By: ldos_sa2 <ldos-sa2@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 15:50:10 by ldos_sa2          #+#    #+#             */
-/*   Updated: 2025/10/04 15:51:35 by ldos_sa2         ###   ########.fr       */
+/*   Updated: 2025/10/06 21:29:40 by ldos_sa2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,17 @@ void	nodeadd_back(t_node **lst, t_node *new)
 		node_last(*lst)->next = new;
 	else
 		*lst = new;
+}
+
+void	free_nodelist(t_node *list)
+{
+	t_node	*tmp;
+
+	while(list)
+	{
+		tmp = list->next;
+		free(list->value);
+		free(list);
+		list = tmp;
+	}
 }

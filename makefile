@@ -9,6 +9,8 @@ RM = rm -f
 SRC= ms_split.c \
 	ms_test.c \
 	node_utils.c \
+	split_utils.c \
+	ms_tokens.c \
 
 OBJS = $(SRC:.c=.o)
 

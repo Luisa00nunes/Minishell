@@ -1,0 +1,104 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ms_tokens.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ldos_sa2 <ldos-sa2@student.42.rio>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/26 08:18:07 by ldos_sa2          #+#    #+#             */
+/*   Updated: 2025/10/06 21:50:44 by ldos_sa2         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+static int	is_redd(char *token)
+{
+	if(!ft_strncmp(token, ">", 1) || !ft_strncmp(token, "<", 1))
+		return (1);
+	else if(!ft_strncmp(token, ">>", 2) || !ft_strncmp(token, "<<", 2))
+		return (1);
+	else
+		return (0);
+}
+
+static void	not_words(char *token, t_node *ls)
+{
+	t_node	*node;
+
+	if(!ft_strncmp(token, "<<", 2))
+	{
+		node = newnode(token, HEREDOC);
+		nodeadd_back(&ls, node);
+	}
+	else if(!ft_strncmp(token, ">>", 2))
+	{
+		node = newnode(token, APP_OUT);
+		nodeadd_back(&ls, node);
+	}
+		else if(!ft_strncmp(token, "<", 1))
+	{
+		node = newnode(token, RED_IN);
+		nodeadd_back(&ls, node);
+	}
+	else if(!ft_strncmp(token, ">", 1))
+	{
+		node = newnode(token, RED_OUT);
+		nodeadd_back(&ls, node);
+	}
+	else
+		return ;
+}
+
+static t_node	*split_tokens(char **token_list)
+{
+	t_node	*ls = NULL;
+	t_node	*node;
+	int	i;
+
+	i = 0;
+	while(token_list[i])
+	{
+		if(!ft_strncmp(token_list[i], "|", 1))
+		{
+			node = newnode(token_list[i], PIPE);
+			nodeadd_back(&ls, node);
+		}
+		else if (is_redd(token_list[i]))
+			not_words(token_list[i], ls);
+		else
+		{
+			node = newnode(token_list[i], WORD);
+			nodeadd_back(&ls, node);
+		}
+		free(token_list[i]);
+		i++;
+	}
+	return(ls);
+}
+
+
+void	split_process(char *prompt)
+{
+	char	**token_list;
+	t_node	*tokens;
+	t_node	*temp;
+	int	i;
+	int	num_tokens;
+
+	i = 0;
+	//tratar error de começo - prompt vazio etc1
+	num_tokens = count_words(prompt);
+	token_list = ms_split(prompt);
+	tokens = split_tokens(token_list);
+	free(token_list);
+	token_list = NULL;
+
+	t_node *tmp = tokens;
+	while(tmp)
+	{
+		printf("Type: %i   Value: %s\n", tmp->type, tmp->value);
+		tmp = tmp ->next;
+	}
+	free_nodelist(tokens);
+}
